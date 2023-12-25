@@ -15,9 +15,44 @@ const createFile = async (filePath) => {
   }
 };
 
+const deleteFile = async (filePath) => {
+  // await fs.writeFile(filePath, '');
+  //   try {
+  //     const file = await fs.open(filePath, 'r');
+  //     fs.rm(filePath);
+  //     return console.log(`Deleteing ${filePath}....`);
+  //   } catch (error) {
+  //     console.log(`The file not existed in this path ${filePath}.`);
+  //   }
+
+  try {
+    const file = await fs.unlink(filePath);
+    return console.log(`Deleteing ${filePath}....`);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.log(`The file not existed in this path.`);
+    } else {
+      console.log('Error occurred whilw removing the file.');
+    }
+  }
+};
+
+const renameFile = async (oldPath, newPath) => {
+  // await fs.writeFile(filePath, '');
+  console.log(`Rename ${oldPath} to ${newPath}....`);
+};
+
+const addToFile = (path, content) => {
+  console.log(`Adding to ${path}`);
+  console.log(`Content: ${content}`);
+};
+
 (async () => {
   // commands
-  const CREATE_FILE = 'create a file';
+  const CREATE_FILE = 'create a file:';
+  const DELETE_FILE = 'delete a file:';
+  const RENAME_FILE = 'rename a file:';
+  const ADD_TO_FILE = 'add to the file:';
 
   const commandFileHandler = await fs.open('./command.txt', 'r');
 
@@ -37,11 +72,36 @@ const createFile = async (filePath) => {
     // Need to read the conent
     const command = buffer.toString('utf-8');
 
-    // create a file
-    // create a file <path>
+    // create a file:
+    // create a file: <path>
     if (command.includes(CREATE_FILE)) {
       const filePath = command.substring(CREATE_FILE.length + 1);
       createFile(filePath);
+    }
+
+    // delete a file:
+    // delete a file: <path>
+    if (command.includes(DELETE_FILE)) {
+      const filePath = command.substring(DELETE_FILE.length + 1);
+      deleteFile(filePath);
+    }
+
+    // rename a file:
+    // rename a file: <path> to <new-path>
+    if (command.includes(RENAME_FILE)) {
+      const _idx = command.indexOf(' to ');
+      const oldFilePath = command.substring(RENAME_FILE.length + 1, _idx);
+      const newFilePath = command.substring(_idx + 4);
+      renameFile(oldFilePath, newFilePath);
+    }
+
+    // add to the file:
+    // add to the file: <path> to this content: <content>
+    if (command.includes(ADD_TO_FILE)) {
+      const _idx = command.indexOf(' to this content: ');
+      const filePath = command.substring(ADD_TO_FILE.length + 1, _idx);
+      const content = command.substring(_idx + 18);
+      addToFile(filePath, content);
     }
   });
 

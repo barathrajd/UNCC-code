@@ -1,1 +1,1 @@
-create a file /home/barathrajd/node-test/hello.txt
+delete a file: hello.txt
