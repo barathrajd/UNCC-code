@@ -14,13 +14,10 @@ const fs = require('fs/promises');
     const position = 0;
     // length of the file
     const length = buffer.byteLength;
-    const content = await commandFileHandler.read(
-      buffer,
-      offset,
-      length,
-      position
-    );
-    console.log(content);
+    await commandFileHandler.read(buffer, offset, length, position);
+
+    console.log(buffer.toString('utf-8'));
+    // Need to read the conent
   });
 
   const watcher = fs.watch('./');
