@@ -1,1 +1,1 @@
-delete a file: hello.txt
+add to the file: hello.txt to this content: a

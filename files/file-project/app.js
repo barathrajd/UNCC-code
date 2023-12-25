@@ -20,13 +20,14 @@ const deleteFile = async (filePath) => {
   //   try {
   //     const file = await fs.open(filePath, 'r');
   //     fs.rm(filePath);
+  //     file.close()
   //     return console.log(`Deleteing ${filePath}....`);
   //   } catch (error) {
   //     console.log(`The file not existed in this path ${filePath}.`);
   //   }
 
   try {
-    const file = await fs.unlink(filePath);
+    await fs.unlink(filePath);
     return console.log(`Deleteing ${filePath}....`);
   } catch (error) {
     if (error.code === 'ENOENT') {
@@ -39,12 +40,29 @@ const deleteFile = async (filePath) => {
 
 const renameFile = async (oldPath, newPath) => {
   // await fs.writeFile(filePath, '');
-  console.log(`Rename ${oldPath} to ${newPath}....`);
+  // console.log(oldPath, newPath);
+  try {
+    await fs.rename(oldPath, newPath);
+    return console.log(`Renamed ${oldPath} to ${newPath}`);
+  } catch (error) {
+    console.log(`The file not existed in this path.`);
+  }
 };
+let addedContent;
 
-const addToFile = (path, content) => {
-  console.log(`Adding to ${path}`);
-  console.log(`Content: ${content}`);
+const addToFile = async (path, content) => {
+  // console.log(`Content: ${content}`);
+  if (addedContent === content) return;
+  try {
+    const fileHandle = await fs.open(path, 'a');
+    fileHandle.write(content);
+    addedContent = content;
+    fileHandle.close();
+    console.log(`Added the content to the file ${path}`);
+  } catch (error) {
+    console.log(error);
+    console.log('Error occured while adding content to the file');
+  }
 };
 
 (async () => {
